@@ -84,6 +84,31 @@ class Messenger{
       }}';
       $this->sendToFb($info_to_send);
     }
+    /*
+      Sending multiples buttons.
+    */
+    function sendMessageWithMultipleButtons($message_display,$buttons){
+      $buttons_str="[";
+      for($i=0,$length=sizeof($buttons);$i<$length;$i++){
+        $buttons_str=$buttons_str.'{"type":"'.$buttons[$i]["type"].'","title":"'.$buttons[$i]["title"].'","payload":"'.$buttons[$i]["payload"].'"},';
+      }
+      $buttons_str=$buttons_str."]";
+      $info_to_send='{
+        "recipient":{
+          "id":"' . $this->sender . '"
+        },
+        "message":{
+          "attachment":{
+            "type":"template",
+            "payload":{
+              "template_type":"button",
+              "text":"'.$message_display.'",
+              "buttons":'.$buttons_str.'
+            }
+          }
+        }}';
+      $this->sendToFb($info_to_send);
+    }
 
   }
   ?>
