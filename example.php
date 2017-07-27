@@ -6,4 +6,5 @@
   $msn->init();
   $msn->sendMessage("This should be sending to the user after he/she interact with your bot");
   $msn->sendMessageWithButton("This is the message that should be displayed in the box of button selection","Yes");
+  $msn->sendMessageWithMultipleButtons("This is the message that should be displayed in the box of multiple button selection",array(array("type"=>"postback","title"=>"I am agree","payload"=>"ACCEPTING"),array("type"=>"postback","title"=>"I am not agree","payload"=>"NOT_ACCEPTING")));
 ?>
