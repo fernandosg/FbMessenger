@@ -5,4 +5,5 @@
   $msn=new Messenger($accesstoken,$page_id,json_decode(file_get_contents('php://input'), true));
   $msn->init();
   $msn->sendMessage("This should be sending to the user after he/she interact with your bot");
+  $msn->sendMessageWithButton("This is the message that should be displayed in the box of button selection","Yes");
 ?>
