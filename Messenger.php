@@ -33,7 +33,7 @@ class Messenger{
 		$this->setPostback();
   }
 
-  function initCurl(){
+	function initCurl(){
 		$this->handler = curl_init($this->url);
 	}
 
@@ -52,17 +52,18 @@ class Messenger{
     Handler the process of sending to Fb API
   */
 	function sendToFb($info_to_send){
-    $this->initCurl();
+		$this->initCurl();
 		curl_setopt($this->handler, CURLOPT_POST, 1);
 		curl_setopt($this->handler, CURLOPT_POSTFIELDS, $info_to_send);
 		curl_setopt($this->handler, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-		if (!empty($this->input['entry'][0]['messaging'][0]['message'])) {
+		if (!empty($this->input['entry'][0]['messaging'][0]['message']) || !empty($this->input["entry"][0]["messaging"][0]["postback"])){
 			$result = curl_exec($this->handler);
-      $this->close();
+			$this->close();
+		}else{
 		}
 	}
 
-  function close(){
+	function close(){
 		curl_close($this->handler);
 	}
 
