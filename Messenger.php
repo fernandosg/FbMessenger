@@ -7,6 +7,7 @@ class Messenger{
   var $message;
   var $url;
   var $handler;
+	var $postback;
 
   /*
   Receiving configuration variables
@@ -27,20 +28,42 @@ class Messenger{
     }else{
       $this->sender = $this->input['entry'][0]['messaging'][0]['sender']['id'];
       $this->message = $this->input['entry'][0]['messaging'][0]['message']['text'];
-      $this->handler = curl_init($this->url);
+      $this->initCurl();
     }
+		$this->setPostback();
   }
+
+  function initCurl(){
+		$this->handler = curl_init($this->url);
+	}
+
+	function setPostback(){
+		$this->postback=$this->input["entry"][0]["messaging"][0]["postback"]["payload"];
+	}
+
+	function isPostbackLike($compare_postback){
+		if(!empty($this->postback)){
+			return $this->postback==$compare_postback;
+		}
+		return false;
+	}
 
   /*
     Handler the process of sending to Fb API
   */
 	function sendToFb($info_to_send){
+    $this->initCurl();
 		curl_setopt($this->handler, CURLOPT_POST, 1);
 		curl_setopt($this->handler, CURLOPT_POSTFIELDS, $info_to_send);
 		curl_setopt($this->handler, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 		if (!empty($this->input['entry'][0]['messaging'][0]['message'])) {
 			$result = curl_exec($this->handler);
+      $this->close();
 		}
+	}
+
+  function close(){
+		curl_close($this->handler);
 	}
 
   /*
