@@ -7,7 +7,7 @@ class Messenger{
   var $message;
   var $url;
   var $handler;
-	var $postback;
+  var $postback;
 
   /*
   Receiving configuration variables
@@ -30,42 +30,42 @@ class Messenger{
       $this->message = $this->input['entry'][0]['messaging'][0]['message']['text'];
       $this->initCurl();
     }
-		$this->setPostback();
+    $this->setPostback();
   }
 
-	function initCurl(){
-		$this->handler = curl_init($this->url);
-	}
+  function initCurl(){
+    $this->handler = curl_init($this->url);
+  }
 
-	function setPostback(){
-		$this->postback=$this->input["entry"][0]["messaging"][0]["postback"]["payload"];
-	}
+  function setPostback(){
+    $this->postback=$this->input["entry"][0]["messaging"][0]["postback"]["payload"];
+  }
 
-	function isPostbackLike($compare_postback){
-		if(!empty($this->postback)){
-			return $this->postback==$compare_postback;
-		}
-		return false;
-	}
+  function isPostbackLike($compare_postback){
+    if(!empty($this->postback)){
+      return $this->postback==$compare_postback;
+    }
+    return false;
+  }
 
   /*
-    Handler the process of sending to Fb API
+  Handler the process of sending to Fb API
   */
-	function sendToFb($info_to_send){
-		$this->initCurl();
-		curl_setopt($this->handler, CURLOPT_POST, 1);
-		curl_setopt($this->handler, CURLOPT_POSTFIELDS, $info_to_send);
-		curl_setopt($this->handler, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-		if (!empty($this->input['entry'][0]['messaging'][0]['message']) || !empty($this->input["entry"][0]["messaging"][0]["postback"])){
-			$result = curl_exec($this->handler);
-			$this->close();
-		}else{
-		}
-	}
+  function sendToFb($info_to_send){
+    $this->initCurl();
+    curl_setopt($this->handler, CURLOPT_POST, 1);
+    curl_setopt($this->handler, CURLOPT_POSTFIELDS, $info_to_send);
+    curl_setopt($this->handler, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    if (!empty($this->input['entry'][0]['messaging'][0]['message']) || !empty($this->input["entry"][0]["messaging"][0]["postback"])){
+      $result = curl_exec($this->handler);
+      $this->close();
+    }else{
+    }
+  }
 
-	function close(){
-		curl_close($this->handler);
-	}
+  function close(){
+    curl_close($this->handler);
+  }
 
   /*
   Send a message. This method only send a simple message text
@@ -83,7 +83,7 @@ class Messenger{
   }
 
   /*
-    Sending a message with a button action
+  Sending a message with a button action
   */
   function sendMessageWithButton($message_display,$button_message){
     $info_to_send='{
@@ -109,7 +109,7 @@ class Messenger{
       $this->sendToFb($info_to_send);
     }
     /*
-      Sending multiples buttons.
+    Sending multiples buttons.
     */
     function sendMessageWithMultipleButtons($message_display,$buttons){
       $buttons_str="[";
@@ -131,8 +131,25 @@ class Messenger{
             }
           }
         }}';
-      $this->sendToFb($info_to_send);
-    }
+        $this->sendToFb($info_to_send);
+      }
 
-  }
-  ?>
+      function sendDefaultGenericTemplate($elements){
+        $info_to_send='{
+          "recipient":{
+            "id":"'.$this->sender.'"
+          },
+          "message":{
+            "attachment":{
+              "type":"template",
+              "payload":{
+                "template_type":"generic",
+                "elements":'.json_encode($elements).'
+              }
+            }
+          }
+        }';
+        $this->sendToFb($info_to_send);
+      }
+    }
+    ?>
